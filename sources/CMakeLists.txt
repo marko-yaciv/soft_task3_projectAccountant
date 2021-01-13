@@ -1,4 +1,4 @@
-set(SOURCES main.cpp FilesKeeper.cpp)
+set(SOURCES main.cpp FilesKeeper.cpp FileAnalyser.cpp)
 
 add_library(${CMAKE_PROJECT_NAME}_lib STATIC ${SOURCES})
 
