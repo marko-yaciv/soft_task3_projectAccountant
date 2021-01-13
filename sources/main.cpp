@@ -1,6 +1,7 @@
 #include <iostream>
 #include "FilesKeeper.h"
-int main() {
+int main()
+{
     FilesKeeper keeper(R"(D:\Programing\QtProjects)");
     keeper.findFiles();
     keeper.printFoundedFiles();

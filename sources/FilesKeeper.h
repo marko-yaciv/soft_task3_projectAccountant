@@ -12,9 +12,10 @@
 #include <vector>
 
 namespace fs = std::experimental::filesystem;
-class FilesKeeper {
+class FilesKeeper
+{
 private:
-    std::string m_currentDirectoryPath;
+    std::string m_rootDirectoryPath;
     std::vector<std::string> m_currentDirectoryFilesPaths;
 public:
     FilesKeeper();
@@ -26,7 +27,6 @@ public:
     [[nodiscard]] std::string getFilePathAt(size_t index) const;
 
     void printFoundedFiles() const;
-
 };
 
 

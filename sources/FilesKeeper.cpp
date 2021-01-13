@@ -5,9 +5,9 @@
 #include "FilesKeeper.h"
 #include <iostream>
 #include <utility>
-FilesKeeper::FilesKeeper(): m_currentDirectoryPath(""){}
+FilesKeeper::FilesKeeper(): m_rootDirectoryPath(""){}
 
-FilesKeeper::FilesKeeper(std::string startDirectory):m_currentDirectoryPath(std::move(startDirectory)){}
+FilesKeeper::FilesKeeper(std::string startDirectory): m_rootDirectoryPath(std::move(startDirectory)){}
 
 FilesKeeper::~FilesKeeper()  = default;
 
@@ -23,10 +23,15 @@ std::string FilesKeeper::getFilePathAt(size_t index) const
 
 void FilesKeeper::findFiles()
 {
-
+    if (fs::exists(m_rootDirectoryPath) ||
+        fs::is_directory(m_rootDirectoryPath))
+    {
+        throw std::string(m_rootDirectoryPath +
+        " isn't directory or doesn't exists");
+    }
     std::regex extensions(".*\\.[hc](pp)?");
 
-    for(auto& filePath : fs::recursive_directory_iterator(m_currentDirectoryPath))
+    for(auto& filePath : fs::recursive_directory_iterator(m_rootDirectoryPath))
     {
         if (fs::is_regular_file(filePath) &&
             std::regex_match(filePath.path().string(),extensions))
