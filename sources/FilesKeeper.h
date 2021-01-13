@@ -8,6 +8,7 @@
 #include <string>
 #include <fstream>
 #include <experimental/filesystem>
+#include <regex>
 #include <vector>
 
 namespace fs = std::experimental::filesystem;
