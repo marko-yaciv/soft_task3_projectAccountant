@@ -1,19 +1,25 @@
 #include <iostream>
 #include "FilesKeeper.h"
 #include "FileAnalyser.h"
+#include <chrono>
+
 int main()
 {
-    /*FilesKeeper keeper(R"(D:\Programing\QtProjects)");
-    keeper.findFiles();
-    keeper.printFoundedFiles();
-    std::cout << "Count of files: " << keeper.getCountOfFiles() << std::endl;*/
-    FileAnalyser analyser(R"(D:\Programing\QtProjects\2course\kursova\learn-system\studentdialog.h)");
-    analyser.analyse();
-    std::cout
-    << "Count of blank lines = " << analyser.getCountOfBlankLines()
-    << "\nCount of code lines = " << analyser.getCountOfCodeLines()
-    << "\nCount of comment lines = " << analyser.getCountOfCommentLines()
-    << std::endl;
+    FilesKeeper keeper("D:\\Programing\\boost_1_75_0\\tools");
+    try {
+        keeper.findFiles();
+    }catch (const std::string& ex){
+        std::cout << ex << std::endl;
+        return 1;
+    }
+    std::cout << "Count of files: " << keeper.getCountOfFiles() << std::endl;
 
+    FileAnalyser analyser(keeper.getFiles());
+
+    auto start = std::chrono::high_resolution_clock::now();
+    analyser.startParsing();
+    //analyser.openAndParse(keeper.getFiles());
+    auto end = std::chrono::high_resolution_clock::now();
+    std::cout << "Time is: " << std::chrono::duration_cast<std::chrono::milliseconds>(end  - start).count() << std::endl;
     return 0;
 }

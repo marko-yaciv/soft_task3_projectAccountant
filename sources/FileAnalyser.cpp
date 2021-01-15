@@ -1,20 +1,26 @@
 //
 // Created by Marko on 13.01.2021.
 //
+#include <iostream>
 #include "FileAnalyser.h"
 
-#include <utility>
-
-FileAnalyser::FileAnalyser(std::string  filePath):
-                m_filePath(std::move(filePath)),
+FileAnalyser::FileAnalyser(std::vector<std::string>& filesToParse):
                 m_countOfBlankLines(0),
                 m_countOfCommentLines(0),
                 m_countOfCodeLines(0),
-                m_countOfAllLines(0)
+                m_countOfAllLines(0),
+                m_filesToAnalyse(filesToParse)
 {
-
+    m_out = std::ofstream("out.txt");
 }
-
+FileAnalyser::FileAnalyser():
+        m_countOfBlankLines(0),
+        m_countOfCommentLines(0),
+        m_countOfCodeLines(0),
+        m_countOfAllLines(0)
+{
+    m_out = std::ofstream("out.txt");
+}
 unsigned FileAnalyser::getCountOfBlankLines() const
 {
     return m_countOfBlankLines;
@@ -29,18 +35,35 @@ unsigned FileAnalyser::getCountOfCodeLines() const
 {
     return m_countOfCodeLines;
 }
-
-void FileAnalyser::analyse()
+unsigned FileAnalyser::getTotalCountOfLines() const
 {
-        std::ifstream fileToAnalyse(m_filePath);
-        if(!fileToAnalyse.is_open())
+    return m_countOfAllLines;
+}
+
+void FileAnalyser::startParsing()
+{
+    auto numOfConcurrency = std::thread::hardware_concurrency();
+    auto numOfPackPerThread = m_filesToAnalyse.size() / numOfConcurrency + 1 ;
+
+    std::vector<std::thread> threads(numOfPackPerThread);
+    auto begin = m_filesToAnalyse.begin();
+    auto end = begin + numOfConcurrency;
+
+    for(auto& th : threads)
+    {
+        if(end > m_filesToAnalyse.end())
         {
-            throw std::string("Cannot open file " + m_filePath);
+            end = m_filesToAnalyse.end();
         }
+        th = std::thread(&FileAnalyser::openAndParse,std::ref(*this),std::vector<std::string>{begin,end});
+        begin = end;
+        end = begin + numOfConcurrency;
+    }
 
-        doParse(fileToAnalyse);
-
-        fileToAnalyse.close();
+    for(auto& th : threads)
+    {
+        th.join();
+    }
 }
 
 void FileAnalyser::doParse(std::ifstream& file)
@@ -107,3 +130,31 @@ void FileAnalyser::doParse(std::ifstream& file)
 }
 
 
+
+void FileAnalyser::openAndParse(const std::vector<std::string>& files)
+{
+    std::ifstream fileToAnalyse;
+
+    for(auto&file : files)
+    {
+        fileToAnalyse = std::ifstream(file);
+        if(!fileToAnalyse.is_open())
+        {
+            std::cout << std::string("Cannot open file " + file);
+            continue;
+        }
+
+        std::lock_guard<std::mutex> lock(m_lock);
+        doParse(fileToAnalyse);
+        fileToAnalyse.close();
+
+        m_out << "File: " << file << std::endl
+              << "Count of blank lines = " << m_countOfBlankLines
+              << "\nCount of code lines = " << m_countOfCodeLines
+              << "\nCount of comment lines = " << m_countOfCommentLines
+              << "\nTotal count of lines = " << m_countOfAllLines << std::endl;
+        m_countOfCodeLines = m_countOfCommentLines =
+        m_countOfBlankLines = m_countOfAllLines = 0;
+    }
+
+}

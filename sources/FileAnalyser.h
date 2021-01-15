@@ -9,24 +9,30 @@
 #include <fstream>
 #include <sstream>
 #include <regex>
+#include <mingw.thread.h>
+#include <mingw.mutex.h>
 class FileAnalyser {
 private:
-    const std::string m_filePath;
-
+    std::ofstream m_out;
+    std::mutex m_lock;
+    std::vector<std::string> m_filesToAnalyse;
     unsigned m_countOfBlankLines;
     unsigned m_countOfCommentLines;
     unsigned m_countOfCodeLines;
     unsigned m_countOfAllLines;
 
     void doParse(std::ifstream& file);
-
 public:
-    explicit FileAnalyser(std::string filePath);
-    void analyse();
+    void openAndParse(const std::vector<std::string>& files);
+    FileAnalyser();
+    explicit FileAnalyser(std::vector<std::string>& filesToParse);
+    void startParsing();
 
     [[nodiscard]] unsigned getCountOfBlankLines() const;
     [[nodiscard]] unsigned getCountOfCommentLines() const;
     [[nodiscard]] unsigned getCountOfCodeLines() const;
+    [[nodiscard]] unsigned getTotalCountOfLines() const;
+
 };
 
 
