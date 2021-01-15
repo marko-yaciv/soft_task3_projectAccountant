@@ -11,12 +11,16 @@
 #include <regex>
 #include <vector>
 
+#include <mingw.mutex.h>
+
 namespace fs = std::experimental::filesystem;
 class FilesKeeper
 {
 private:
     std::string m_rootDirectoryPath;
     std::vector<std::string> m_currentDirectoryFilesPaths;
+
+
 public:
     FilesKeeper();
     ~FilesKeeper();
@@ -25,7 +29,7 @@ public:
     void findFiles();
     [[nodiscard]] size_t getCountOfFiles() const;
     [[nodiscard]] std::string getFilePathAt(size_t index) const;
-
+    [[nodiscard]] std::vector<std::string>& getFiles();
     void printFoundedFiles() const;
 };
 
