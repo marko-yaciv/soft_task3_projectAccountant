@@ -144,10 +144,10 @@ void FileAnalyser::openAndParse(const std::vector<std::string>& files)
             continue;
         }
 
-        std::lock_guard<std::mutex> lock(m_lock);
         doParse(fileToAnalyse);
         fileToAnalyse.close();
 
+        std::lock_guard<std::mutex> lock(m_lock);
         m_out << "File: " << file << std::endl
               << "Count of blank lines = " << m_countOfBlankLines
               << "\nCount of code lines = " << m_countOfCodeLines
