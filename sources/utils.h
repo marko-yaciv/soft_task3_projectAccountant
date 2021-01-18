@@ -66,9 +66,9 @@ std::string askPathToSave()
     {
         std::cout << "Where do you want to save data?(path)\n";
         std::cin >> path;
-        if(!fs::exists(path) || !fs::is_regular_file(path))
+        if(!fs::is_directory(path))
         {
-            std::cout << "No such path or file is incorrect\n";
+            std::cout << "No such path. (Please enter path without filename)\n";
         }
         else
         {
@@ -86,7 +86,7 @@ void saveData(FileAnalyser& analyser)
     {
         auto path = askPathToSave();
         std::cout << "Saving info..." << std::endl;
-        analyser.saveData(path);
+        analyser.saveDataToJson(path);
         std::cout << "Results were saved in: " << path << std::endl;
     }
 }

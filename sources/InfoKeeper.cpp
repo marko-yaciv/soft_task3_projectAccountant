@@ -3,18 +3,3 @@
 //
 
 #include "InfoKeeper.h"
-
-void InfoKeeper::setInfoAboutFile(FileInfo &info)
-{
-    std::lock_guard<std::mutex> lock(m_lock);
-    filesData.push_back(info);
-}
-
-void InfoKeeper::saveData(const std::string&)
-{
-
-}
-
-std::list<FileInfo>& InfoKeeper::getfilesData(){
-    return filesData;
-}

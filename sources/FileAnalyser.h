@@ -15,11 +15,12 @@
 
 /*Implements mulithreaded
  * Analysing of given files
- * and outputing Result info*/
+ * and Saves Result info*/
 class FileAnalyser: public InfoKeeper {
 private:
     std::vector<std::string> m_filesToAnalyse;
-
+    std::list<FileInfo> m_dataAboutFiles;
+    std::mutex m_lock;
 public:
     FileAnalyser();
     explicit FileAnalyser(std::vector<std::string>& filesToParse);
@@ -28,7 +29,10 @@ public:
     void startParsing();
 
 //function that will save data in json file.
-    void saveData(const std::string& path) override;
+    void saveDataToJson(const std::string& path);
+
+// overrided function to get info about files when processing
+    void setInfoAboutFile(FileInfo& info) override;
 };
 
 

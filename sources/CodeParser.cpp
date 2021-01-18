@@ -3,7 +3,10 @@
 //
 #include "CodeParser.h"
 
-CodeParser::CodeParser() = default;
+CodeParser::CodeParser(InfoKeeper* keeper): m_keeper(keeper)
+{
+
+}
 
 void CodeParser::doParse(std::ifstream &file, const std::string& filePath)
 {
@@ -69,7 +72,7 @@ void CodeParser::doParse(std::ifstream &file, const std::string& filePath)
         ++fileData.m_numOfAllLines;
     }
 
-    keeper.setInfoAboutFile(fileData);
+    m_keeper->setInfoAboutFile(fileData);
 }
 
 void CodeParser::parseFiles(const std::list<std::string> &files)
@@ -89,7 +92,7 @@ void CodeParser::parseFiles(const std::list<std::string> &files)
     }
 }
 
-std::list<FileInfo>& CodeParser::getInfo()
+/*std::list<FileInfo>& CodeParser::getInfo()
 {
     return keeper.getfilesData();
-}
+}*/

@@ -24,18 +24,10 @@ typedef struct {
  * It uses mutex for safe adding data
  * from threads to vector of FileInfo structures.*/
 class InfoKeeper{
-    std::mutex m_lock;
 public:
-    //This function uses mutex
-    void setInfoAboutFile(FileInfo& info);
-
-    std::list<FileInfo>& getfilesData();
-
-    //provides different types of saving data for derieved classes
-    virtual void saveData(const std::string&);
-
-protected:
-    std::list<FileInfo> filesData;
+    //This function should use mutex
+    // if multithreaded file parsing is going
+    virtual void setInfoAboutFile(FileInfo& info) = 0;
 };
 
 

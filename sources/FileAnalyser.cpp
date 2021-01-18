@@ -22,7 +22,8 @@ void FileAnalyser::startParsing()
     auto begin = m_filesToAnalyse.begin();
     auto end = begin + numOfPackPerThread;
 
-    CodeParser parser;
+    CodeParser parser(this);
+
     for(auto& th : threads)
     {
         if(end > m_filesToAnalyse.end())
@@ -38,21 +39,25 @@ void FileAnalyser::startParsing()
     {
         th.join();
     }
-
-    filesData = parser.getInfo();
 }
 
-void FileAnalyser::saveData(const std::string& path)
+void FileAnalyser::setInfoAboutFile(FileInfo &info)
 {
-    std::ofstream out(path);
+    std::lock_guard<std::mutex> locker(m_lock);
+    m_dataAboutFiles.push_back(info);
+}
 
-    for(auto& info : filesData)
+void FileAnalyser::saveDataToJson(const std::string& path)
+{
+    std::ofstream out(path + "/out.txt");
+
+    for(auto& info : m_dataAboutFiles)
     {
         out << "File: " << info.filePath
-        << "\nTotal Lines: "<< info.m_numOfAllLines
-        << "\nCode Lines: "<< info.m_numOfCodeLines
-        << "\nBlank Lines: "<< info.m_numOfBlankLines
-        << "\nComment Lines: "<< info.m_numOfCommentLines
+        << "\nTotal Lines: " << info.m_numOfAllLines
+        << "\nCode Lines: " << info.m_numOfCodeLines
+        << "\nBlank Lines: " << info.m_numOfBlankLines
+        << "\nComment Lines: " << info.m_numOfCommentLines
         << "\n-----------------------"<< std::endl;
     }
 }
