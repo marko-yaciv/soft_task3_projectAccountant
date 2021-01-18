@@ -10,17 +10,25 @@
 #include <sstream>
 #include <regex>
 #include <mingw.thread.h>
-#include <mingw.mutex.h>
 #include "CodeParser.h"
+#include "InfoKeeper.h"
 
-class FileAnalyser {
+/*Implements mulithreaded
+ * Analysing of given files
+ * and outputing Result info*/
+class FileAnalyser: public InfoKeeper {
 private:
     std::vector<std::string> m_filesToAnalyse;
 
 public:
     FileAnalyser();
     explicit FileAnalyser(std::vector<std::string>& filesToParse);
+
+//divides total work on threads and starts parsing
     void startParsing();
+
+//function that will save data in json file.
+    void saveData() override;
 };
 
 

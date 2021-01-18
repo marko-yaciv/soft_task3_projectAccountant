@@ -27,7 +27,7 @@ int main()
     auto start = std::chrono::high_resolution_clock::now();
     analyser.startParsing();
     auto end = std::chrono::high_resolution_clock::now();
-
+    analyser.saveData();
 //printing result time
     std::cout << "Time is: " <<
     std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()

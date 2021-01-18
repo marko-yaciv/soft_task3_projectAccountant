@@ -16,18 +16,13 @@ size_t FilesKeeper::getCountOfFiles() const
     return m_currentDirectoryFilesPaths.size();
 }
 
-std::string FilesKeeper::getFilePathAt(size_t index) const
-{
-    return m_currentDirectoryFilesPaths[index];
-}
-
 void FilesKeeper::findFiles()
 {
     if (!fs::exists(m_rootDirectoryPath) ||
         !fs::is_directory(m_rootDirectoryPath))
     {
         throw std::string(m_rootDirectoryPath +
-        " isn't directory or doesn't exists");
+        " isn't directory or doesn't exists\n");
     }
     std::regex extensions(".*\\.[hc](pp)?");
 
@@ -51,7 +46,8 @@ void FilesKeeper::printFoundedFiles() const
 
 
 
-std::vector<std::string>& FilesKeeper::getFiles() {
+std::vector<std::string>& FilesKeeper::getFiles()
+{
     return m_currentDirectoryFilesPaths;
 }
 
