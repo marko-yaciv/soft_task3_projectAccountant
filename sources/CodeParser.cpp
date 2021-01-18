@@ -3,27 +3,12 @@
 //
 #include "CodeParser.h"
 
-CodeParser::CodeParser(const std::vector<std::string> &files)
-{
-    m_filesToParse = files;
-    m_out = std::ofstream("out.txt");
-}
-
-CodeParser::CodeParser(std::string &file)
-{
-    m_filesToParse.push_back(file);
-    m_out = std::ofstream("out.txt");
-}
-
-CodeParser::CodeParser()
-{
-    m_out = std::ofstream("out.txt");
-
-}
+CodeParser::CodeParser() = default;
 
 void CodeParser::doParse(std::ifstream &file, const std::string& filePath)
 {
-    m_FileInfo FileInfo{0};
+    FileInfo fileData{0};
+    fileData.filePath = filePath;
 
     std::string textLine;
     std::regex exprForBlankLine("");
@@ -39,38 +24,38 @@ void CodeParser::doParse(std::ifstream &file, const std::string& filePath)
         {
             if(std::regex_search(textLine, std::regex(R"((\*\/))"))) // end of block comment
             {
-                ++FileInfo.m_numOfCommentLines;
+                ++fileData.m_numOfCommentLines;
                 if(std::regex_match(textLine, codeAfterBlockCommentEnd))
                 {
-                    ++FileInfo.m_numOfCodeLines;
+                    ++fileData.m_numOfCodeLines;
                 }
                 isBlockCommentLine = false;
             }
             else
             {
-                ++FileInfo.m_numOfCommentLines;
+                ++fileData.m_numOfCommentLines;
             }
             continue;
         }
 
         if(std::regex_match(textLine,exprForBlankLine))
         {
-            ++FileInfo.m_numOfBlankLines;
+            ++fileData.m_numOfBlankLines;
         }
         else if(std::regex_search(textLine,commentLine))
         {
-            ++FileInfo.m_numOfCommentLines;
+            ++fileData.m_numOfCommentLines;
             if(std::regex_match(textLine,codeBeforeCommentLine))
             {
-                ++FileInfo.m_numOfCodeLines;
+                ++fileData.m_numOfCodeLines;
             }
         }
         else if(std::regex_search(textLine,std::regex(R"((\/\*))"))) // start of block comment
         {
-            ++FileInfo.m_numOfCommentLines;
+            ++fileData.m_numOfCommentLines;
             if(std::regex_match(textLine,codeBeforeBlockCommentBegin))
             {
-                ++FileInfo.m_numOfCodeLines;
+                ++fileData.m_numOfCodeLines;
             }
             if(!std::regex_search(textLine,std::regex(R"((\*\/))")))
             {
@@ -79,15 +64,15 @@ void CodeParser::doParse(std::ifstream &file, const std::string& filePath)
         }
         else
         {
-            ++FileInfo.m_numOfCodeLines;
+            ++fileData.m_numOfCodeLines;
         }
-        ++FileInfo.m_numOfAllLines;
+        ++fileData.m_numOfAllLines;
     }
 
-    saveDataAboutFile(filePath,FileInfo);
+    keeper.setInfoAboutFile(fileData);
 }
 
-void CodeParser::parseFiles(const std::vector<std::string> &files)
+void CodeParser::parseFiles(const std::list<std::string> &files)
 {
     std::ifstream fileToAnalyse;
 
@@ -104,12 +89,7 @@ void CodeParser::parseFiles(const std::vector<std::string> &files)
     }
 }
 
-void CodeParser::saveDataAboutFile(const std::string& filePath, const CodeParser::m_FileInfo &info)
+std::list<FileInfo>& CodeParser::getInfo()
 {
-    std::lock_guard<std::mutex> lock(m_lock);
-    m_out << "File: " << filePath << std::endl
-          << "Count of blank lines = " << info.m_numOfBlankLines
-          << "\nCount of code lines = " << info.m_numOfCodeLines
-          << "\nCount of comment lines = " << info.m_numOfCommentLines
-          << "\nTotal count of lines = " << info.m_numOfAllLines << std::endl;
+    return keeper.getfilesData();
 }
