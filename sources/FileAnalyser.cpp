@@ -17,14 +17,13 @@ FileAnalyser::FileAnalyser()
 void FileAnalyser::startParsing()
 {
     auto numOfConcurrency = std::thread::hardware_concurrency();
+    CodeParser parser(this);
+#ifndef USE_THREAD_POOL
     auto numOfPackPerThread = m_filesToAnalyse.size() / numOfConcurrency + 1 ;
-    std::vector<std::thread> threads(numOfConcurrency);
     auto begin = m_filesToAnalyse.begin();
     auto end = begin + numOfPackPerThread;
-
-    CodeParser parser(this);
-
-    for(auto& th : threads)
+    std::vector<std::thread> threads(numOfConcurrency);
+        for(auto& th : threads)
     {
         if(end > m_filesToAnalyse.end())
         {
@@ -34,11 +33,23 @@ void FileAnalyser::startParsing()
         begin = end;
         end = begin + numOfPackPerThread;
     }
-
     for(auto& th : threads)
     {
         th.join();
     }
+#else
+    boost::asio::thread_pool pool(numOfConcurrency);
+    for(auto& file : m_filesToAnalyse)
+    {
+        boost::asio::post(pool,[&file, &parser]
+        {
+            parser.parseFiles(std::list<std::string>{file});
+        });
+    }
+    pool.join();
+#endif
+
+
 }
 
 void FileAnalyser::setInfoAboutFile(FileInfo &info)
@@ -49,15 +60,18 @@ void FileAnalyser::setInfoAboutFile(FileInfo &info)
 
 void FileAnalyser::saveDataToJson(const std::string& path)
 {
-    std::ofstream out(path + "/out.txt");
-
+    std::ofstream file(path + "/result.json");
     for(auto& info : m_dataAboutFiles)
     {
-        out << "File: " << info.filePath
-        << "\nTotal Lines: " << info.m_numOfAllLines
-        << "\nCode Lines: " << info.m_numOfCodeLines
-        << "\nBlank Lines: " << info.m_numOfBlankLines
-        << "\nComment Lines: " << info.m_numOfCommentLines
-        << "\n-----------------------"<< std::endl;
+        std::stringstream ss;
+        boost::property_tree::ptree pt;
+        pt.put("FileName", info.filePath);
+        pt.put("Info.NumberOfLines", info.m_numOfAllLines);
+        pt.put("Info.NumberOfBlankLines", info.m_numOfBlankLines);
+        pt.put("Info.NumberOfCodeLines", info.m_numOfCodeLines);
+        pt.put("Info.NumberOfCmmentLines", info.m_numOfCommentLines);
+
+        boost::property_tree::json_parser::write_json(ss,pt);
+        file << ss.str();
     }
 }

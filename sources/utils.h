@@ -14,7 +14,7 @@ std::string startProgram()
 {
     std::cout << "Enter path ro directory for analysing: " << std::endl;
     std::string path;
-    std::cin >> path;
+    std::getline(std::cin,path);
     return path;
 }
 
@@ -66,7 +66,7 @@ std::string askPathToSave()
     {
         std::cout << "Where do you want to save data?(path)\n";
         std::cin >> path;
-        if(!fs::is_directory(path))
+        if(!boost::filesystem::is_directory(path))
         {
             std::cout << "No such path. (Please enter path without filename)\n";
         }

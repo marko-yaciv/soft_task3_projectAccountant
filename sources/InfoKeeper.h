@@ -5,11 +5,7 @@
 #ifndef PROJECTACCOUNTANT_INFOKEEPER_H
 #define PROJECTACCOUNTANT_INFOKEEPER_H
 
-#include <mingw.thread.h>
-#include <mingw.mutex.h>
-#include <list>
 #include <string>
-
 /*Struct contains data about file*/
 typedef struct {
     unsigned m_numOfBlankLines;

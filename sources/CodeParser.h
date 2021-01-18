@@ -5,12 +5,11 @@
 #ifndef PROJECTACCOUNTANT_CODEPARSER_H
 #define PROJECTACCOUNTANT_CODEPARSER_H
 
-
 #include <list>
 #include <string>
 #include <fstream>
-#include <regex>
 #include <iostream>
+#include <regex>
 #include "InfoKeeper.h"
 
 /*class that parses vector of

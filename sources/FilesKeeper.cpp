@@ -5,9 +5,17 @@
 #include "FilesKeeper.h"
 #include <iostream>
 #include <utility>
-FilesKeeper::FilesKeeper(): m_rootDirectoryPath(""){}
+FilesKeeper::FilesKeeper():
+m_rootDirectoryPath("")
+{
 
-FilesKeeper::FilesKeeper(std::string startDirectory): m_rootDirectoryPath(std::move(startDirectory)){}
+}
+
+FilesKeeper::FilesKeeper(std::string startDirectory):
+m_rootDirectoryPath(std::move(startDirectory))
+{
+
+}
 
 FilesKeeper::~FilesKeeper()  = default;
 
@@ -18,17 +26,17 @@ size_t FilesKeeper::getCountOfFiles() const
 
 void FilesKeeper::findFiles()
 {
-    if (!fs::exists(m_rootDirectoryPath) ||
-        !fs::is_directory(m_rootDirectoryPath))
+    if (!boost::filesystem::exists(m_rootDirectoryPath) ||
+        !boost::filesystem::is_directory(m_rootDirectoryPath))
     {
         throw std::string(m_rootDirectoryPath +
-        " isn't directory or doesn't exists\n");
+        " isn't directory or doesn't exist\n");
     }
     std::regex extensions(".*\\.[hc](pp)?");
 
-    for(auto& filePath : fs::recursive_directory_iterator(m_rootDirectoryPath))
+    for(auto& filePath : boost::filesystem::recursive_directory_iterator(m_rootDirectoryPath))
     {
-        if (fs::is_regular_file(filePath) &&
+        if (boost::filesystem::is_regular_file(filePath) &&
             std::regex_match(filePath.path().string(),extensions))
         {
             m_currentDirectoryFilesPaths.push_back(filePath.path().string());

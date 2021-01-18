@@ -4,18 +4,26 @@
 
 #ifndef PROJECTACCOUNTANT_FILEANALYSER_H
 #define PROJECTACCOUNTANT_FILEANALYSER_H
-
-#include <string>
-#include <fstream>
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 #include <sstream>
-#include <regex>
-#include <mingw.thread.h>
+#include <boost/thread.hpp>
+#include <thread>
 #include "CodeParser.h"
 #include "InfoKeeper.h"
+#define USE_THREAD_POOL
+#undef USE_THREAD_POOL
+
+#ifdef USE_THREAD_POOL
+    #include <boost/asio/thread_pool.hpp>
+    #include <boost/asio.hpp>
+#endif
 
 /*Implements mulithreaded
  * Analysing of given files
  * and Saves Result info*/
+
 class FileAnalyser: public InfoKeeper {
 private:
     std::vector<std::string> m_filesToAnalyse;
