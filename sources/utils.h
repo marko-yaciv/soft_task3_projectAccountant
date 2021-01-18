@@ -26,7 +26,7 @@ void findFiles(FilesKeeper& keeper)
         std::cout << ex << std::endl;
         exit(1);
     }
-    std::cout << "Found" << keeper.getCountOfFiles() <<
+    std::cout << "Found " << keeper.getCountOfFiles() <<
               " files with such extensions : \".cpp .hpp .h .c\" "<< std::endl;
 }
 
@@ -40,7 +40,8 @@ auto clockAndAnalyse(FileAnalyser& analyser)
 void analyseFiles(FileAnalyser& analyser)
 {
     std::cout << "Do you want to clock time? (y/n): ";
-    auto c = std::getchar();
+    char c;
+    std::cin >> c;
     if(c == 'y' || c == 'Y')
     {
         std::cout<< "Processing files..."<<std::endl;
@@ -79,7 +80,8 @@ std::string askPathToSave()
 void saveData(FileAnalyser& analyser)
 {
     std::cout << " Do you want to save results? (y/n): ";
-    auto c = std::getchar();
+    char c;
+    std::cin >> c;
     if(c == 'y' || c == 'Y')
     {
         auto path = askPathToSave();

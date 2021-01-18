@@ -10,7 +10,7 @@ void InfoKeeper::setInfoAboutFile(FileInfo &info)
     filesData.push_back(info);
 }
 
-void InfoKeeper::saveData()
+void InfoKeeper::saveData(const std::string&)
 {
 
 }
