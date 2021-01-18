@@ -42,9 +42,9 @@ void FileAnalyser::startParsing()
     filesData = parser.getInfo();
 }
 
-void FileAnalyser::saveData()
+void FileAnalyser::saveData(const std::string& path)
 {
-    std::ofstream out("out2.txt");
+    std::ofstream out(path);
 
     for(auto& info : filesData)
     {

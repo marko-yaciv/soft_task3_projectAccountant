@@ -32,7 +32,7 @@ public:
     std::list<FileInfo>& getfilesData();
 
     //provides different types of saving data for derieved classes
-    virtual void saveData();
+    virtual void saveData(const std::string&);
 
 protected:
     std::list<FileInfo> filesData;

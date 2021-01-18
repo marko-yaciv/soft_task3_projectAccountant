@@ -28,7 +28,7 @@ public:
     void startParsing();
 
 //function that will save data in json file.
-    void saveData() override;
+    void saveData(const std::string& path) override;
 };
 
 
