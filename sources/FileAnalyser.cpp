@@ -13,17 +13,33 @@ FileAnalyser::FileAnalyser()
 {
 
 }
+int FileAnalyser::calculateNumOfConcurrency()
+{
+    auto maxHardwareThreadsNumber = std::thread::hardware_concurrency();
+    int sizeOfData = m_filesToAnalyse.size();
+
+    if(sizeOfData >= maxHardwareThreadsNumber)
+    {
+        return maxHardwareThreadsNumber;
+    }
+    return sizeOfData;
+}
 
 void FileAnalyser::startParsing()
 {
-    auto numOfConcurrency = std::thread::hardware_concurrency();
+    if(m_filesToAnalyse.empty())
+    {
+        throw std::string("Threre are nothing to parse");
+    }
+    auto numOfConcurrency = calculateNumOfConcurrency();
     CodeParser parser(this);
 #ifndef USE_THREAD_POOL
-    auto numOfPackPerThread = m_filesToAnalyse.size() / numOfConcurrency + 1 ;
+    auto numOfPackPerThread = m_filesToAnalyse.size() / numOfConcurrency + 1;
     auto begin = m_filesToAnalyse.begin();
     auto end = begin + numOfPackPerThread;
     std::vector<std::thread> threads(numOfConcurrency);
-        for(auto& th : threads)
+
+    for(auto& th : threads)
     {
         if(end > m_filesToAnalyse.end())
         {
@@ -48,8 +64,6 @@ void FileAnalyser::startParsing()
     }
     pool.join();
 #endif
-
-
 }
 
 void FileAnalyser::setInfoAboutFile(FileInfo &info)
@@ -61,6 +75,10 @@ void FileAnalyser::setInfoAboutFile(FileInfo &info)
 void FileAnalyser::saveDataToJson(const std::string& path)
 {
     std::ofstream file(path + "/result.json");
+    if(!file.is_open())
+    {
+        throw std::string("Canot open file. Check please path validity");
+    }
     for(auto& info : m_dataAboutFiles)
     {
         std::stringstream ss;
@@ -74,4 +92,10 @@ void FileAnalyser::saveDataToJson(const std::string& path)
         boost::property_tree::json_parser::write_json(ss,pt);
         file << ss.str();
     }
+
 }
+
+std::list<FileInfo> FileAnalyser::getData() const {
+    return m_dataAboutFiles;
+}
+

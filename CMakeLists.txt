@@ -7,9 +7,9 @@ set(CMAKE_CXX_STANDARD 17)
 add_subdirectory(sources)
 add_subdirectory(tests)
 add_subdirectory(gtest_lib/googletest)
+include_directories(${Boost_INCLUDE_DIR})
 #add_subdirectory(mingw-std-threads)
 
-include_directories(${Boost_INCLUDE_DIR})
 
 #target_link_libraries(${CMAKE_PROJECT_NAME} stdc++fs)
 #target_link_libraries(${CMAKE_PROJECT_NAME} mingw_stdthreads)

@@ -21,6 +21,7 @@ private:
 //function that parses file
     void doParse(std::ifstream& file, const std::string& filePath);
 public:
+    CodeParser(){};
     explicit CodeParser(InfoKeeper* keeper);
 
 //opens each file and calls to it doParse

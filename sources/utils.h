@@ -53,9 +53,14 @@ void analyseFiles(FileAnalyser& analyser)
     }
     else
     {
-        std::cout<< "Processing files..."<<std::endl;
-        analyser.startParsing();
-        std::cout<< "Finished!"<<std::endl;
+        try {
+            std::cout<< "Processing files..."<<std::endl;
+            analyser.startParsing();
+            std::cout<< "Finished!"<<std::endl;
+        }catch(std::string& ex){
+            std::cout << ex << std::endl;
+        }
+
     }
 }
 
