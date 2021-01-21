@@ -12,7 +12,7 @@
 #include <thread>
 #include "CodeParser.h"
 #include "InfoKeeper.h"
-
+//#define USE_THREAD_POOL
 
 #ifdef USE_THREAD_POOL
     #include <boost/asio/thread_pool.hpp>
@@ -25,7 +25,7 @@
 
 class FileAnalyser: public InfoKeeper {
 private:
-    std::vector<std::string> m_filesToAnalyse;
+    std::vector<std::string>& m_filesToAnalyse;
     std::list<FileInfo> m_dataAboutFiles;
     std::mutex m_lock;
 
@@ -33,13 +33,12 @@ private:
     void setInfoAboutFile(FileInfo& info) override;
     int calculateNumOfConcurrency();
 public:
-    FileAnalyser();
 
     explicit FileAnalyser(std::vector<std::string>& filesToParse);
 
 //divides total work on threads and starts parsing
     void startParsing();
-    std::list<FileInfo> getData() const;
+    [[nodiscard]] std::list<FileInfo> getData() const;
 //function that will save data in json file.
     void saveDataToJson(const std::string& path);
 };

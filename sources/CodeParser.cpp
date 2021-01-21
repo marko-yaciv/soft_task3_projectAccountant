@@ -16,9 +16,9 @@ void CodeParser::doParse(std::ifstream &file, const std::string& filePath)
     std::string textLine;
     std::regex exprForBlankLine("");
     std::regex commentLine(R"(\/\/)");
-    std::regex codeBeforeCommentLine(R"(((\w|\s|[;,.=()])+//(\w|\s|[;,.=()])*))");
-    std::regex codeBeforeBlockCommentBegin(R"(((\w|\s|[;,.=()])+(\/\*)(\w|\s|[;,.=()])+))");
-    std::regex codeAfterBlockCommentEnd(R"(((\w|\s|[;,.=()])+(\*\/)(\w|\s|[;,.=()])+))");
+    std::regex codeBeforeCommentLine(R"(((\w|\s|[;,.=()<>]|\]|\[)+//(\w|\s|[;,.=()<>]|\]|\[)*))");
+    std::regex codeBeforeBlockCommentBegin(R"(((\w|\s|[;,.=()<>]|\]|\[)+(\/\*)(\w|\s|[;,.=()<>]|\]|\[)*))");
+    std::regex codeAfterBlockCommentEnd(R"(((\w|\s|[;,.=()<>]|\]|\[)*(\*\/)(\w|\s|[;,.=()<>]|\]|\[)+))");
 
     bool  isBlockCommentLine = false;
     while(std::getline(file, textLine))

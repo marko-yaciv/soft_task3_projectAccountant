@@ -66,7 +66,7 @@ TEST(parseFile, correctParsing)
     info.m_numOfAllLines = 20;
     info.m_numOfBlankLines = 4;
     info.m_numOfCommentLines = 6;
-    info.m_numOfCodeLines = 10;
+    info.m_numOfCodeLines = 13;
 
     EXPECT_EQ(info,analyser.getData().front());
 

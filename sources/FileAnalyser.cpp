@@ -9,10 +9,7 @@ FileAnalyser::FileAnalyser(std::vector<std::string>& filesToParse):
 {
 
 }
-FileAnalyser::FileAnalyser()
-{
 
-}
 int FileAnalyser::calculateNumOfConcurrency()
 {
     auto maxHardwareThreadsNumber = std::thread::hardware_concurrency();
@@ -79,19 +76,22 @@ void FileAnalyser::saveDataToJson(const std::string& path)
     {
         throw std::string("Canot open file. Check please path validity");
     }
+    boost::property_tree::ptree array;
+    std::stringstream ss;
+    size_t counter = 0;
     for(auto& info : m_dataAboutFiles)
     {
-        std::stringstream ss;
         boost::property_tree::ptree pt;
         pt.put("FileName", info.filePath);
-        pt.put("Info.NumberOfLines", info.m_numOfAllLines);
-        pt.put("Info.NumberOfBlankLines", info.m_numOfBlankLines);
-        pt.put("Info.NumberOfCodeLines", info.m_numOfCodeLines);
-        pt.put("Info.NumberOfCmmentLines", info.m_numOfCommentLines);
+        pt.put("NumberOfLines", info.m_numOfAllLines);
+        pt.put("NumberOfBlankLines", info.m_numOfBlankLines);
+        pt.put("NumberOfCodeLines", info.m_numOfCodeLines);
+        pt.put("NumberOfCmmentLines", info.m_numOfCommentLines);
 
-        boost::property_tree::json_parser::write_json(ss,pt);
-        file << ss.str();
+        array.add_child(std::to_string(++counter),pt);
     }
+    boost::property_tree::json_parser::write_json(ss,array);
+    file << ss.str();
 
 }
 
