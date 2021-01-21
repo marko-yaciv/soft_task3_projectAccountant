@@ -25,7 +25,8 @@ public:
     explicit CodeParser(InfoKeeper* keeper);
 
 //opens each file and calls to it doParse
-    void parseFiles(const std::list<std::string> &files);
+    void parseFiles(std::vector<std::string>::iterator begin,
+                    std::vector<std::string>::iterator end);
 };
 
 

@@ -76,19 +76,19 @@ void CodeParser::doParse(std::ifstream &file, const std::string& filePath)
     m_keeper->setInfoAboutFile(fileData);
 }
 
-void CodeParser::parseFiles(const std::list<std::string> &files)
+void CodeParser::parseFiles(std::vector<std::string>::iterator begin,
+                            std::vector<std::string>::iterator end)
 {
     std::ifstream fileToAnalyse;
-
-    for(auto&file : files)
+    for(auto file = begin; file != end; ++file)
     {
-        fileToAnalyse = std::ifstream(file);
+        fileToAnalyse = std::ifstream(*file);
         if(!fileToAnalyse.is_open())
         {
-            std::cout << "Cannot open file " << file << std::endl;
+            std::cout << "Cannot open file " << *file << std::endl;
             continue;
         }
-        doParse(fileToAnalyse,file);
+        doParse(fileToAnalyse,*file);
         fileToAnalyse.close();
     }
 }

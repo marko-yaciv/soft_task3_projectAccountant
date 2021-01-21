@@ -35,14 +35,13 @@ void FileAnalyser::startParsing()
     auto begin = m_filesToAnalyse.begin();
     auto end = begin + numOfPackPerThread;
     std::vector<std::thread> threads(numOfConcurrency);
-
     for(auto& th : threads)
     {
         if(end > m_filesToAnalyse.end())
         {
             end = m_filesToAnalyse.end();
         }
-        th = std::thread(&CodeParser::parseFiles,std::ref(parser),std::list<std::string>{begin,end});
+        th = std::thread(&CodeParser::parseFiles,std::ref(parser),begin,end);
         begin = end;
         end = begin + numOfPackPerThread;
     }
